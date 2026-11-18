@@ -1,0 +1,51 @@
+# Tiny hand-made scenario: the basic flow (report -> assign -> travel -> work
+# -> complete) with two robots, one blocked road and one road that is blocked
+# and restored during the run.
+SCENARIO tiny_basic
+
+PARAM max_steps 60
+PARAM speed 1
+PARAM battery_per_cost_unit 1
+PARAM battery_per_work_step 2
+PARAM recharge_per_step 5
+
+LOCATIONS 8
+1 Command_Center COMMAND
+2 Junction_A JUNCTION
+3 Hospital_1 HOSPITAL
+4 Building_1 BUILDING
+5 Junction_B JUNCTION
+6 Building_2 BUILDING
+7 Charging_1 CHARGING
+8 Depot_1 DEPOT
+
+CONNECTIONS 10
+1 1 2 2 OPEN
+2 2 3 3 OPEN
+3 2 4 4 OPEN
+4 1 5 3 OPEN
+5 5 6 2 OPEN
+6 5 7 2 OPEN
+7 4 6 5 BLOCKED
+8 3 8 4 OPEN
+9 6 8 3 OPEN
+10 4 5 6 OPEN
+
+ROBOTS 3
+1 1 MEDICAL 80 80
+2 7 FIRE 80 80
+3 8 GENERAL 100 100
+
+REQUESTS 6
+1 0 3 MEDICAL 4 3
+2 0 6 FIRE 3 2
+3 5 4 SUPPLY 2 3
+4 8 3 MEDICAL 5 2
+5 12 6 SEARCH 1 2
+6 20 4 FIRE 3 3
+
+EVENTS 2
+10 BLOCK 5
+25 UNBLOCK 5
+
+END

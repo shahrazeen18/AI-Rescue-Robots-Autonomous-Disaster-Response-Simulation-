@@ -1,0 +1,47 @@
+# Coordination. Two FIRE robots (1, 2) compete for three FIRE requests that are
+# reported at the same step; a MEDICAL robot has a single request; there is no
+# SUPPLY-capable robot (request 6 FAILS immediately). Request 3 (urgency 1) and
+# request 4 (urgency 3) are both pending when robot 1 frees up (robot 2 is busy
+# for much longer); the event at
+# t=3 raises request 3 to urgency 5, so it is served before request 4.
+SCENARIO conflict_and_priority
+
+PARAM max_steps 100
+PARAM speed 1
+PARAM battery_per_cost_unit 1
+PARAM battery_per_work_step 2
+PARAM recharge_per_step 5
+
+LOCATIONS 6
+1 Building_1 BUILDING
+2 Junction_1 JUNCTION
+3 Building_2 BUILDING
+4 Junction_2 JUNCTION
+5 Hospital_1 HOSPITAL
+6 Charging_1 CHARGING
+
+CONNECTIONS 6
+1 1 2 2 OPEN
+2 2 3 2 OPEN
+3 3 4 2 OPEN
+4 4 5 2 OPEN
+5 5 6 2 OPEN
+6 1 6 1 BLOCKED
+
+ROBOTS 3
+1 2 FIRE 100 100
+2 5 FIRE 100 100
+3 1 MEDICAL 100 100
+
+REQUESTS 6
+1 0 1 FIRE 2 4
+2 0 6 FIRE 2 9
+3 0 3 FIRE 1 3
+4 2 4 FIRE 3 3
+5 0 5 MEDICAL 3 2
+6 0 3 SUPPLY 4 2
+
+EVENTS 1
+3 SET_URGENCY 3 5
+
+END

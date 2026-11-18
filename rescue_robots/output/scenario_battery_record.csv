@@ -1,0 +1,75 @@
+time,event,robot,request,object,value,detail
+0,SIM_START,,,,150,scenario=battery_charging_offline locations=6 connections=7 robots=2 requests=2 events=4
+0,REQUEST_STATE,,1,,4,NOT_REPORTED->PENDING reported
+0,REQUEST_REPORTED,,1,4,4,FIRE duration=10
+0,ROBOT_STATE,1,,,20,AVAILABLE->RETURNING low battery
+0,RETURN_TO_CHARGER,1,,1,4,route_edges=1
+1,MOVE,1,,1,20,2->1 cost=4
+5,ROBOT_STATE,1,,,16,RETURNING->RECHARGING reached charging station
+6,STATION_DOWN,,,1,0,changed
+6,ROBOT_STATE,1,,,16,RECHARGING->AVAILABLE charging station down
+7,ROBOT_STATE,1,,,16,AVAILABLE->RETURNING low battery
+7,RETURN_TO_CHARGER,1,,5,12,route_edges=3
+8,MOVE,1,,1,16,1->2 cost=4
+10,REQUEST_STATE,,2,,2,NOT_REPORTED->PENDING reported
+10,REQUEST_REPORTED,,2,6,2,SEARCH duration=3
+10,REQUEST_STATE,,2,,2,PENDING->ASSIGNED assigned
+10,ASSIGN,2,2,6,0,route_edges=0 battery=40
+10,ROBOT_STATE,2,,,40,AVAILABLE->PERFORMING assigned (already on site)
+10,REQUEST_STATE,,2,,2,ASSIGNED->IN_PROGRESS work started
+10,WORK_START,2,2,,10,duration=3
+11,REQUEST_STATE,,2,,2,IN_PROGRESS->PENDING robot went offline
+11,REASSIGN,2,2,,1,request released: robot went offline
+11,ROBOT_STATE,2,,,38,PERFORMING->UNAVAILABLE offline
+11,ROBOT_OFFLINE,2,,,1,changed
+12,MOVE,1,,5,12,2->6 cost=3
+15,MOVE,1,,6,9,6->5 cost=5
+20,ROBOT_STATE,1,,,4,RETURNING->RECHARGING reached charging station
+24,REQUEST_STATE,,2,,2,PENDING->ASSIGNED assigned
+24,ASSIGN,1,2,6,5,route_edges=1 battery=19
+24,ROBOT_STATE,1,,,19,RECHARGING->TRAVELLING assigned
+24,MOVE,1,2,6,19,5->6 cost=5
+28,ARRIVE,1,2,6,14,at request location
+28,ROBOT_STATE,1,,,14,TRAVELLING->PERFORMING arrived
+28,REQUEST_STATE,,2,,2,ASSIGNED->IN_PROGRESS work started
+28,WORK_START,1,2,,29,duration=3
+31,REQUEST_STATE,,2,,2,IN_PROGRESS->COMPLETED work finished
+31,WORK_DONE,1,2,,21,completed; turnaround=21 battery=8
+31,ROBOT_STATE,1,,,8,PERFORMING->AVAILABLE task complete
+32,ROBOT_STATE,1,,,8,AVAILABLE->RETURNING low battery
+32,RETURN_TO_CHARGER,1,,5,5,route_edges=1
+33,MOVE,1,,6,8,6->5 cost=5
+38,ROBOT_STATE,1,,,3,RETURNING->RECHARGING reached charging station
+40,STATION_UP,,,1,1,changed
+44,REQUEST_STATE,,1,,4,PENDING->ASSIGNED assigned
+44,ASSIGN,1,1,4,4,route_edges=1 battery=28
+44,ROBOT_STATE,1,,,28,RECHARGING->TRAVELLING assigned
+44,MOVE,1,1,4,28,5->4 cost=4
+47,ARRIVE,1,1,4,24,at request location
+47,ROBOT_STATE,1,,,24,TRAVELLING->PERFORMING arrived
+47,REQUEST_STATE,,1,,4,ASSIGNED->IN_PROGRESS work started
+47,WORK_START,1,1,,48,duration=10
+57,REQUEST_STATE,,1,,4,IN_PROGRESS->COMPLETED work finished
+57,WORK_DONE,1,1,,57,completed; turnaround=57 battery=4
+57,ROBOT_STATE,1,,,4,PERFORMING->AVAILABLE task complete
+58,SIM_END,,,,58,all requests resolved
+58,FINAL_STAT,,,,2,completed
+58,FINAL_STAT,,,,0,failed
+58,FINAL_STAT,,,,0,pending
+58,FINAL_STAT,,,,0,assigned
+58,FINAL_STAT,,,,0,in_progress
+58,FINAL_STAT,,,,0,not_reported
+58,FINAL_STAT,,,,3,assignments
+58,FINAL_STAT,,,,1,reassignments
+58,FINAL_STAT,,,,0,reroutes
+58,FINAL_STAT,,,,0,conflicts
+58,FINAL_STAT,,,,0,rejected_actions
+58,FINAL_STAT,,,,30,total_distance
+58,FINAL_STAT,,,,30,battery_travel
+58,FINAL_STAT,,,,28,battery_work
+58,FINAL_STAT,,,,40,battery_recharged
+58,FINAL_STAT,,,,48,max_response_time
+58,FINAL_STAT,,,,24000,avg_response_time_x1000
+58,FINAL_STAT,,,,18,route_searches
+58,FINAL_ROBOT,1,,,2,state=AVAILABLE battery=4/60 busy_steps=22 distance=30 battery_used=56 battery_recharged=40
+58,FINAL_ROBOT,2,,,0,state=UNAVAILABLE battery=38/40 busy_steps=1 distance=0 battery_used=2 battery_recharged=0
