@@ -1,0 +1,24 @@
+count_too_few.txt|declares 4 records but only 3 found
+count_too_many.txt|more records than the declared count
+missing_end.txt|missing END
+bad_category.txt|unknown request category 'RESCUE'
+dup_location.txt|duplicate location id 2
+conn_unknown_endpoint.txt|unknown location 9
+urgency_range.txt|urgency: 6 is out of range
+battery_over_max.txt|exceeds max battery
+unknown_keyword.txt|unknown keyword 'DRONES'
+event_bad_ref.txt|unknown connection 77
+non_numeric.txt|not a valid integer
+missing_max_steps.txt|missing required PARAM max_steps
+self_loop.txt|self-loop
+zero_cost.txt|connection cost: 0 is out of range
+station_down_non_charging.txt|is not a CHARGING station
+bad_status.txt|must be OPEN or BLOCKED
+duplicate_robot.txt|duplicate section ROBOTS
+robot_bad_location.txt|starts at unknown location 9
+request_bad_location.txt|unknown location 9
+trailing_content.txt|content after END
+bad_capability.txt|unknown capability 'FLYING'
+missing_section.txt|missing required section REQUESTS
+event_wrong_arity.txt|needs 4 fields
+minimal_bad.txt|missing required section CONNECTIONS

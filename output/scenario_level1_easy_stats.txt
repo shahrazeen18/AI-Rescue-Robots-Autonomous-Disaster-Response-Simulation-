@@ -1,0 +1,33 @@
+=== Final statistics: level1_easy ===
+Termination            : max_steps reached (simulated 250 steps)
+Requests               : 60 total
+  completed            : 60
+  failed               : 0
+  remaining            : 0 (pending 0, assigned 0, in progress 0, not yet reported 0)
+Response time (report -> work start): avg 10.80, max 25 (over 60 requests)
+Response by urgency    : U5 avg 12.3 max 20 (n=9); U4 avg 9.3 max 15 (n=13); U3 avg 9.7 max 18 (n=9); U2 avg 11.2 max 25 (n=19); U1 avg 11.7 max 20 (n=10);
+Unresolved by urgency  : U5 0, U4 0, U3 0, U2 0, U1 0
+Robot utilization      : 27.3% (steps travelling or working)
+Distance travelled     : 715 cost units
+Battery                : 715 travel + 408 work used, 877 recharged
+Assignments            : 60 (reassignments 0, reroutes 0)
+Conflicts              : 35 requests with 2+ candidate robots, 11 assignments of a contested robot
+Environment changes    : 11 applied
+Rejected actions       : 0
+Route searches         : 79 (2835 nodes settled, 12848 edges scanned)
+Execution time         : 0.001031 s
+Per-robot summary:
+  id   cap      tasks  busy%   distance  batt-used  recharged final-battery
+  1    MEDICAL  3      24.0    53        79         79        134/134
+  2    FIRE     3      19.6    39        59         0         77/136
+  3    SUPPLY   7      36.8    79        125        151       130/130
+  4    SEARCH   6      35.2    71        111        55        67/123
+  5    GENERAL  8      41.6    92        148        148       144/144
+  6    MEDICAL  3      16.0    32        48         0         91/139
+  7    FIRE     5      24.0    44        76         40        91/127
+  8    SUPPLY   6      32.0    75        117        117       132/132
+  9    SEARCH   3      16.4    31        51         30        97/148
+  10   GENERAL  8      34.4    87        145        145       124/124
+  11   MEDICAL  3      17.6    36        52         0         73/125
+  12   FIRE     5      30.4    76        112        112       130/130
+Load + validate time   : 0.000106 s

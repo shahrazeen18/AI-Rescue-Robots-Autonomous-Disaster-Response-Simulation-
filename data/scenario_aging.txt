@@ -1,0 +1,68 @@
+# Starvation / aging demonstration. One GENERAL robot; request 1 (urgency 1,
+# reported at t=0) competes with a stream of urgency-5 requests (one every 2
+# steps, each needing 2 steps of work), so the robot is never idle. Without
+# aging (PARAM aging_steps 0) request 1 waits until the stream ends (t~62);
+# with aging_steps 10 its effective urgency reaches 5 at t=40 and, being the
+# oldest, it is served then. See tests/aging_off.txt for the no-aging twin.
+SCENARIO aging_starvation
+
+PARAM max_steps 150
+PARAM speed 1
+PARAM battery_per_cost_unit 1
+PARAM battery_per_work_step 2
+PARAM recharge_per_step 5
+PARAM aging_steps 10
+
+LOCATIONS 4
+1 Command_Center COMMAND
+2 Junction_A JUNCTION
+3 Building_1 BUILDING
+4 Charging_1 CHARGING
+
+CONNECTIONS 4
+1 1 2 1 OPEN
+2 2 3 1 OPEN
+3 3 4 1 OPEN
+4 1 4 3 BLOCKED
+
+ROBOTS 1
+1 1 GENERAL 500 500
+
+REQUESTS 32
+1 0 3 MEDICAL 1 2
+2 0 2 FIRE 5 2
+3 2 2 FIRE 5 2
+4 4 2 FIRE 5 2
+5 6 2 FIRE 5 2
+6 8 2 FIRE 5 2
+7 10 2 FIRE 5 2
+8 12 2 FIRE 5 2
+9 14 2 FIRE 5 2
+10 16 2 FIRE 5 2
+11 18 2 FIRE 5 2
+12 20 2 FIRE 5 2
+13 22 2 FIRE 5 2
+14 24 2 FIRE 5 2
+15 26 2 FIRE 5 2
+16 28 2 FIRE 5 2
+17 30 2 FIRE 5 2
+18 32 2 FIRE 5 2
+19 34 2 FIRE 5 2
+20 36 2 FIRE 5 2
+21 38 2 FIRE 5 2
+22 40 2 FIRE 5 2
+23 42 2 FIRE 5 2
+24 44 2 FIRE 5 2
+25 46 2 FIRE 5 2
+26 48 2 FIRE 5 2
+27 50 2 FIRE 5 2
+28 52 2 FIRE 5 2
+29 54 2 FIRE 5 2
+30 56 2 FIRE 5 2
+31 58 2 FIRE 5 2
+32 60 2 FIRE 5 2
+
+EVENTS 1
+100 UNBLOCK 4
+
+END

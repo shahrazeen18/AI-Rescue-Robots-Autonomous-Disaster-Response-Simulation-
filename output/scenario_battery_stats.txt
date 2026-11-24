@@ -1,0 +1,23 @@
+=== Final statistics: battery_charging_offline ===
+Termination            : all requests resolved (simulated 58 steps)
+Requests               : 2 total
+  completed            : 2
+  failed               : 0
+  remaining            : 0 (pending 0, assigned 0, in progress 0, not yet reported 0)
+Response time (report -> work start): avg 24.00, max 48 (over 2 requests)
+Response by urgency    : U5 n/a; U4 avg 48.0 max 48 (n=1); U3 n/a; U2 avg 0.0 max 0 (n=1); U1 n/a;
+Unresolved by urgency  : U5 0, U4 0, U3 0, U2 0, U1 0
+Robot utilization      : 19.8% (steps travelling or working)
+Distance travelled     : 30 cost units
+Battery                : 30 travel + 28 work used, 40 recharged
+Assignments            : 3 (reassignments 1, reroutes 0)
+Conflicts              : 0 requests with 2+ candidate robots, 1 assignments of a contested robot
+Environment changes    : 3 applied
+Rejected actions       : 0
+Route searches         : 18 (81 nodes settled, 167 edges scanned)
+Execution time         : 0.000037 s
+Per-robot summary:
+  id   cap      tasks  busy%   distance  batt-used  recharged final-battery
+  1    GENERAL  2      37.9    30        56         40        4/60
+  2    SEARCH   0      1.7     0         2          0         38/40
+Load + validate time   : 0.000029 s

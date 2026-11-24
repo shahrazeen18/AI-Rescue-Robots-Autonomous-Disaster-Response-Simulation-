@@ -1,0 +1,24 @@
+=== Final statistics: tiny_basic ===
+Termination            : all requests resolved (simulated 37 steps)
+Requests               : 6 total
+  completed            : 6
+  failed               : 0
+  remaining            : 0 (pending 0, assigned 0, in progress 0, not yet reported 0)
+Response time (report -> work start): avg 9.17, max 19 (over 6 requests)
+Response by urgency    : U5 avg 5.0 max 5 (n=1); U4 avg 4.0 max 4 (n=1); U3 avg 9.0 max 14 (n=2); U2 avg 9.0 max 9 (n=1); U1 avg 19.0 max 19 (n=1);
+Unresolved by urgency  : U5 0, U4 0, U3 0, U2 0, U1 0
+Robot utilization      : 56.8% (steps travelling or working)
+Distance travelled     : 48 cost units
+Battery                : 48 travel + 30 work used, 0 recharged
+Assignments            : 6 (reassignments 0, reroutes 0)
+Conflicts              : 1 requests with 2+ candidate robots, 1 assignments of a contested robot
+Environment changes    : 2 applied
+Rejected actions       : 0
+Route searches         : 8 (47 nodes settled, 104 edges scanned)
+Execution time         : 0.000061 s
+Per-robot summary:
+  id   cap      tasks  busy%   distance  batt-used  recharged final-battery
+  1    MEDICAL  1      18.9    5         9          0         71/80
+  2    FIRE     2      62.2    18        28         0         52/80
+  3    GENERAL  3      89.2    25        41         0         59/100
+Load + validate time   : 0.000034 s
