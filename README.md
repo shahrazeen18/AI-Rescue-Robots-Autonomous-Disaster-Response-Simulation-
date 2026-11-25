@@ -1,237 +1,160 @@
-# AI Rescue Robots — Final Project (Submission 2)
+# AI Rescue Robots – how to run it (Windows)
 
-A deterministic, discrete-time rescue-coordination simulator in C++17 for the Data Structures Lab
-(Fall 2026, DS/AI). A fleet of robots serves rescue requests in a disaster-damaged road network while
-roads block and reopen, charging stations fail, robots go offline and priorities change.
+This is our disaster-response simulator, written in C++. Everything below is typed into PowerShell, nothing else needs to be installed except a C++ compiler.
 
-**All core data structures are written from scratch** — dynamic array, hash map, binary heap, stable merge
-sort, graph (CSR adjacency lists). There are **no STL containers and no `std::string`** (the unit tests
-in `tests/` check the data structures; the sources contain no STL container headers). Only the C library (`stdio`, `string.h`, …) and `<chrono>` for timing are used.
+## Before you start
 
----
+You need `g++` (MinGW or MSYS2). To check, type:
 
-## 1. Quick start
-
-You only need a C++17 compiler (g++). Run every command from the project root (the `data/...` paths are relative).
-
-```bash
-g++ -std=c++17 -O2 src/types.cpp src/environment.cpp src/robot.cpp src/rescue_request.cpp src/logger.cpp src/scenario.cpp src/simulation.cpp src/main.cpp -o rescue_sim
-./rescue_sim data/scenario_provided.txt        # Windows PowerShell: .\rescue_sim.exe data/scenario_provided.txt
+```
+g++ --version
 ```
 
-On Ubuntu, `sudo apt install build-essential` gives you g++. On Windows use MinGW/MSYS2 g++ or WSL.
+If it prints a version, you're good. If it says "not recognized", install MSYS2 from msys2.org, add its `ucrt64\bin` folder to your PATH, and open a fresh PowerShell.
 
-## 2. Build
+Then open PowerShell **inside this project folder** (the one that contains `src`, `data` and `tests`). Easy way: open the folder in File Explorer, click the address bar, type `powershell` and press Enter. Every command below is meant to be run from there.
 
-All commands compile with `-std=c++17 -O2` (add `-Wall -Wextra -Wpedantic` to see warnings; there are none).
+## 1. Compile
 
-| Program | Command |
+Copy this whole line, paste it, press Enter:
+
+```
+g++ -std=c++17 -O2 src/types.cpp src/environment.cpp src/robot.cpp src/rescue_request.cpp src/logger.cpp src/scenario.cpp src/simulation.cpp src/main.cpp -o rescue_sim.exe
+```
+
+If nothing is printed and you get a new prompt, it worked. You now have `rescue_sim.exe`.
+
+## 2. Run the scenario we were given
+
+```
+.\rescue_sim.exe data/scenario_provided.txt
+```
+
+You should see the final statistics. The important lines are `completed : 60`, `failed : 0` and `simulated 204 steps`.
+
+## 3. Save the record and the statistics to files
+
+```
+.\rescue_sim.exe data/scenario_provided.txt --out output/my_record.csv --stats-out output/my_stats.txt
+```
+
+Open `my_record.csv` in Excel to see every event, step by step. (The results we already saved for you are in `output/scenario_provided_record.csv` and `output/scenario_provided_stats.txt`.)
+
+## 4. Run the other scenarios
+
+```
+.\rescue_sim.exe data/scenario_level1_easy.txt
+.\rescue_sim.exe data/scenario_level3_hard.txt
+.\rescue_sim.exe data/scenario_stress.txt
+.\rescue_sim.exe data/scenario_tiny.txt
+.\rescue_sim.exe data/scenario_reroute.txt
+.\rescue_sim.exe data/scenario_conflict.txt
+.\rescue_sim.exe data/scenario_battery.txt
+.\rescue_sim.exe data/scenario_aging.txt
+.\rescue_sim.exe data/scenario_medium.txt
+```
+
+In short: `level1_easy`, `scenario_provided` and `level3_hard` get harder one after the other, and `stress` is the big one (120 locations, 24 robots, 120 requests, 600 steps). `level3_hard` is overloaded on purpose, so some requests are still waiting at the end. `tiny`, `reroute`, `conflict`, `battery` and `aging` are small ones that each show one feature (a road blocked while a robot is driving, robots competing for requests, a charger going down, and so on).
+
+## 5. Watch it happen
+
+Run only the first 60 steps and print everything at that moment:
+
+```
+.\rescue_sim.exe data/scenario_provided.txt --steps 60 --show all
+```
+
+Go through it step by step yourself:
+
+```
+.\rescue_sim.exe data/scenario_provided.txt --interactive
+```
+
+Then type `step`, `step 10`, `robots`, `requests`, `env`, `stats`, `run`, `help` or `quit`.
+
+Run it with an internal self-check after every step (it prints an error and stops if anything is inconsistent):
+
+```
+.\rescue_sim.exe data/scenario_stress.txt --check
+```
+
+Only load and check a file without running it:
+
+```
+.\rescue_sim.exe data/scenario_provided.txt --validate
+```
+
+Add `--quiet` to any of these if you don't want the statistics printed.
+
+## 6. Run the tests
+
+```
+g++ -std=c++17 -O2 -Isrc tests/test_main.cpp src/types.cpp src/environment.cpp src/robot.cpp src/rescue_request.cpp src/logger.cpp src/scenario.cpp src/simulation.cpp -o test_runner.exe
+.\test_runner.exe
+```
+
+The last line should say `20339 checks, 0 failed`. The tests create two temporary files, `output/test_a.csv` and `output/test_b.csv`, which you can delete afterwards.
+
+## 7. See what happens with a broken input file
+
+```
+.\rescue_sim.exe tests/invalid/count_too_many.txt
+$LASTEXITCODE
+```
+
+It prints an error with the line number, refuses to run, and `$LASTEXITCODE` shows `1`. (The other broken files are `count_too_few.txt`, `missing_end.txt` and `bad_status.txt` in the same folder.)
+
+## If something goes wrong
+
+- *"g++ is not recognized"*: the compiler isn't installed or isn't on your PATH. See "Before you start", then open a new PowerShell.
+- *"No such file" or "cannot open"*: you're probably not in the project folder. Run `dir` – you should see `src`, `data` and `tests`.
+- *Compile errors*: check `g++ --version`, we need version 7 or newer.
+
+## What the input file looks like
+
+It's a plain text file, exactly like `scenario_provided.txt`. Lines starting with `#` and blank lines are ignored. It starts with `SCENARIO <name>` and some `PARAM <name> <number>` lines, and then has five sections, each written as a word and a count followed by exactly that many lines:
+
+```
+LOCATIONS    id name type                           type: JUNCTION BUILDING HOSPITAL DEPOT CHARGING COMMAND
+CONNECTIONS  id location_a location_b cost status   status: OPEN or BLOCKED (roads work both ways)
+ROBOTS       id start_location capability max_battery initial_battery   capability: MEDICAL FIRE SUPPLY SEARCH GENERAL
+REQUESTS     id report_time location category urgency duration_steps    category: MEDICAL FIRE SUPPLY SEARCH, urgency 1 to 5
+EVENTS       time BLOCK|UNBLOCK connection_id
+             time STATION_DOWN|STATION_UP location_id
+             time SET_URGENCY request_id new_urgency
+             time ROBOT_OFFLINE|ROBOT_ONLINE robot_id
+END
+```
+
+The file must end with `END`. If a count doesn't match the number of lines, or anything else is wrong (unknown ids, bad numbers, and so on), the program reports every problem with its line number and does not run.
+
+Parameters: `max_steps` is required. `speed` (1), `battery_per_cost_unit` (1), `battery_per_work_step` (2) and `recharge_per_step` (5) are optional, with the defaults in brackets. We added a few optional ones of our own: `stop_when_done` (1 = stop as soon as every request is finished), `max_reassign` (5), `low_battery_pct` (50), `aging_steps` (0 = off; waiting requests slowly gain urgency) and `route_strategy` (0 = automatic, only for experiments).
+
+## What the output looks like
+
+**The record** (`--out`) is a CSV with the header `time,event,robot,request,object,value,detail`. An empty cell means "not applicable". Running the same file twice gives exactly the same record. The event types are:
+
+| event | what it means |
 |---|---|
-| simulator | `g++ -std=c++17 -O2 src/types.cpp src/environment.cpp src/robot.cpp src/rescue_request.cpp src/logger.cpp src/scenario.cpp src/simulation.cpp src/main.cpp -o rescue_sim` |
-| unit tests | `g++ -std=c++17 -O2 -Isrc tests/test_main.cpp src/types.cpp src/environment.cpp src/robot.cpp src/rescue_request.cpp src/logger.cpp src/scenario.cpp src/simulation.cpp -o test_runner` then `./test_runner` |
-| loader fuzzer (optional) | `g++ -std=c++17 -O2 -Isrc tests/fuzz_loader.cpp src/types.cpp src/environment.cpp src/robot.cpp src/rescue_request.cpp src/logger.cpp src/scenario.cpp src/simulation.cpp -o fuzz_loader` |
-| scenario generator (optional) | `g++ -std=c++17 -O2 -Isrc tools/gen_scenario.cpp -o gen_scenario` |
+| `SIM_START`, `SIM_END` | the run begins / ends (with the reason) |
+| `REQUEST_REPORTED` | a request shows up |
+| `REQUEST_STATE` | a request changes state (pending, assigned, in progress, completed, failed) |
+| `ROBOT_STATE` | a robot changes state (available, travelling, performing, returning, recharging, unavailable) |
+| `ASSIGN` | a robot is given a request (value = route cost) |
+| `CONFLICT` | several robots could take the same request |
+| `MOVE`, `ARRIVE` | a robot moves along a road / arrives at a location |
+| `WORK_START`, `WORK_DONE` | rescue work starts / finishes |
+| `REROUTE` | a blocked road forced a new route |
+| `REASSIGN` | a request was taken away from a robot (offline, route lost, battery) |
+| `REQUEST_FAILED` | a request failed, with the reason |
+| `RETURN_TO_CHARGER` | a robot goes to a charging station |
+| `ENV_BLOCK`, `ENV_UNBLOCK` | a road closes / reopens |
+| `STATION_DOWN`, `STATION_UP` | a charging station goes out / comes back |
+| `URGENCY_CHANGE` | a request's urgency changed |
+| `ROBOT_OFFLINE`, `ROBOT_ONLINE` | a robot goes offline / comes back |
+| `REJECTED` | an illegal action was refused (this stays at 0 in all our runs) |
+| `FINAL_STAT`, `FINAL_ROBOT` | the final numbers, one line each, at the end of the record |
 
-Malformed-input check by hand: `./rescue_sim tests/invalid/count_too_many.txt` must print an error and exit with code 1.
+**The statistics** (printed on screen, and in the file given to `--stats-out`) show how many requests were completed, failed and left over, the average and maximum response time (also per urgency level), robot utilization, distance travelled, battery used and recharged, the number of assignments, reassignments, reroutes and conflicts, how many environment changes were applied, rejected actions, how much work the route searches did, the execution time, and a table for every robot.
 
-## 3. Running the simulator
-
-```
-./rescue_sim <scenario-file> [options]
-```
-
-| Option | Meaning |
-|---|---|
-| `--out <file>` | write the simulation record (CSV, see §6) |
-| `--stats-out <file>` | write the final statistics to a file as well |
-| `--steps <n>` | run only `n` time steps, then report the state |
-| `--interactive` | step-by-step mode: `step [n]`, `run`, `env`, `robots`, `requests`, `stats`, `help`, `quit` |
-| `--show env\|robots\|requests\|all` | print the environment / robot states / pending-assigned-completed-failed requests after the run |
-| `--validate` | only load and validate the scenario |
-| `--check` | verify internal consistency invariants after every step (exit code 3 if violated) |
-| `--quiet` | suppress the load summary and the final statistics on stdout |
-| `--help` | usage |
-
-Exit codes: `0` ok · `1` invalid scenario (nothing is run) · `2` usage / file error · `3` invariant violated.
-
-Examples:
-
-```bash
-./rescue_sim data/scenario_provided.txt --out output/record.csv --stats-out output/stats.txt
-./rescue_sim data/scenario_provided.txt --steps 60 --show all        # state at t = 60
-./rescue_sim data/scenario_provided.txt --interactive
-./rescue_sim data/scenario_stress.txt --check
-./gen_scenario my_test 300 700 30 300 800 5 hard > data/my_test.txt  # make your own scenario
-```
-
-## 4. Project layout
-
-```
-src/        vector.h  int_map.h  min_heap.h  sort_util.h        own data structures (no STL)
-            types.*  environment.*  robot.*  rescue_request.*    domain model
-            scenario.*  simulation.*  logger.*  main.cpp          loader/validator, engine, record, CLI
-data/       scenario_provided.txt (unchanged) + 10 more scenarios (§5)
-tests/      test_main.cpp (unit + regression), fuzz_loader.cpp (mutation fuzzer),
-            invalid/ (34 malformed inputs), golden/ (reference output), aging_off.txt, valid_base.txt
-tools/      gen_scenario.cpp (deterministic scenario generator)
-output/     record + statistics from running every scenario, benchmark.csv
-README.md   this file
-report.pdf  final project report
-```
-
-## 5. Scenarios (all run without any source change)
-
-| File | Size (locations / connections / robots / requests / steps) | Purpose |
-|---|---|---|
-| `scenario_tiny.txt` | 8 / 10 / 3 / 6 / 60 | basic lifecycle, one blocked road restored later |
-| `scenario_reroute.txt` | 7 / 8 / 2 / 3 / 120 | road blocked **while a robot is travelling** → reroute; a cut-off location that waits for a road |
-| `scenario_conflict.txt` | 6 / 6 / 3 / 6 / 100 | several candidate robots, one robot / several requests, no capable robot (request FAILS), urgency change alters the dispatch order |
-| `scenario_battery.txt` | 6 / 7 / 2 / 2 / 150 | insufficient battery → charging, station goes DOWN → divert, robot offline mid-task → reassignment |
-| `scenario_aging.txt` (+ `tests/aging_off.txt`) | 4 / 4 / 1 / 32 / 150 | starvation demo: an urgency-1 request vs. a stream of urgency-5 requests, with and without aging |
-| **Level 1 – easy** `scenario_level1_easy.txt` | 60 / 130 / 12 / 60 / 250 | generated, few disruptions, generous batteries |
-| **Level 2 – moderate** `scenario_provided.txt` | 56 / 117 / 12 / 60 / 250 | the supplied minimum working scenario |
-| **Level 3 – hard** `scenario_level3_hard.txt` | 100 / 215 / 8 / 110 / 400 | generated overload: request burst, 28 roads blocked, two cut-off locations, 107 environment changes, small batteries, scarce capabilities; 33 requests are still unresolved at the end |
-| **Stress** `scenario_stress.txt` | 120 / 260 / 24 / 120 / 600 | required stress scenario (≥ 2× the minimum working sizes) |
-| `scenario_medium.txt` | 80 / 170 / 16 / 80 / 350 | generated, between minimum and stress |
-| `scenario_scale_1000.txt` | 1000 / 2500 / 50 / 500 / 1000 | scalability demonstration |
-
-Regenerate any generated file: `./gen_scenario <name> <locations> <connections> <robots> <requests> <max_steps> <seed> [normal|easy|hard]`
-(e.g. `./gen_scenario level3_hard 100 215 8 110 400 33 hard`). The generator uses its own random generator, so the same
-arguments always give the same file.
-
-## 6. Input format
-
-Exactly the format of `scenario_provided.txt`: lines starting with `#` and blank lines are ignored; `SCENARIO <name>`;
-`PARAM <key> <integer>`; five sections `LOCATIONS`, `CONNECTIONS`, `ROBOTS`, `REQUESTS`, `EVENTS`, each written as
-`KEYWORD <count>` followed by exactly `<count>` records, one per line; the file ends with `END`. Tokens are separated
-by spaces or tabs; ids are non-negative integers and need not be consecutive. Records with the same time keep their
-file order.
-
-```
-LOCATIONS    id name type                                  JUNCTION BUILDING HOSPITAL DEPOT CHARGING COMMAND
-CONNECTIONS  id location_a location_b cost OPEN|BLOCKED    undirected, cost >= 1
-ROBOTS       id start_location capability max_battery initial_battery   MEDICAL FIRE SUPPLY SEARCH GENERAL
-REQUESTS     id report_time location category urgency duration_steps    category: MEDICAL FIRE SUPPLY SEARCH; urgency 1..5
-EVENTS       time BLOCK|UNBLOCK <connection_id>
-             time STATION_DOWN|STATION_UP <location_id>
-             time SET_URGENCY <request_id> <new_urgency>
-             time ROBOT_OFFLINE|ROBOT_ONLINE <robot_id>
-```
-
-**Parameters.** Required: `max_steps`. The five parameters of the provided file are used as described in §8:
-`speed` (default 1), `battery_per_cost_unit` (1), `battery_per_work_step` (2), `recharge_per_step` (5).
-**Our optional extensions** (not used by the provided file; defaults shown, all documented here):
-
-| `PARAM` | Default | Meaning |
-|---|---|---|
-| `stop_when_done` | 1 | `1`: stop as soon as every request is COMPLETED or FAILED; `0`: always run `max_steps` steps |
-| `max_reassign` | 5 | a request FAILS after being released by robots more than this many times |
-| `low_battery_pct` | 50 | an idle robot below this % of its maximum battery goes to charge |
-| `aging_steps` | 0 (off) | with `n > 0` a waiting request gains +1 effective urgency per `n` steps waited (prevents starvation) |
-| `route_strategy` | 0 | `0` automatic, `1` force one search per request, `2` force one search per idle robot (testing/benchmarking only; see §9) |
-
-Unknown `PARAM` keys give a warning and are ignored.
-
-**Validation.** Every problem is reported with its line number, several at once, and an invalid scenario is never run
-(exit code 1): count/record mismatch in either direction, missing `END` / section / `max_steps`, content after `END`,
-unknown keywords, types, categories, capabilities or statuses, non-integer or out-of-range numbers, wrong field count,
-duplicate ids, connections to unknown locations or from a location to itself, cost < 1, robots/requests at unknown
-locations, `initial_battery > max_battery`, urgency outside 1..5, duration < 1, events naming unknown
-connections/requests/robots, `STATION_*` events on a non-`CHARGING` location, over-long lines or names. Warnings (the
-scenario still runs): a road network that is disconnected even with all roads open, no restricted connection and no
-`BLOCK` event, no robots / requests / events.
-
-## 7. Output
-
-**Simulation record** (`--out`, CSV with header): `time,event,robot,request,object,value,detail` — ids are the external
-ids from the input file; an empty cell means "not applicable". Identical input always gives a byte-identical record.
-
-| `event` | robot / request / object | `value` | `detail` |
-|---|---|---|---|
-| `SIM_START` | | `max_steps` | scenario name and sizes |
-| `REQUEST_REPORTED` | request / location id | urgency | category, duration |
-| `REQUEST_STATE` | request | current urgency | `FROM->TO reason` (NOT_REPORTED, PENDING, ASSIGNED, IN_PROGRESS, COMPLETED, FAILED) |
-| `ROBOT_STATE` | robot | battery | `FROM->TO reason` (AVAILABLE, TRAVELLING, PERFORMING, RETURNING, RECHARGING, UNAVAILABLE) |
-| `CONFLICT` | chosen robot / request | number of candidate robots | |
-| `ASSIGN` | robot / request / location id | route cost | route length in edges, battery |
-| `MOVE` | robot / request / connection id | battery before the move | `from->to cost=` |
-| `REROUTE` | robot / request / blocked connection id (or charger id for a return trip) | new route cost | |
-| `ARRIVE`, `WORK_START`, `WORK_DONE` | robot / request | battery / start step / turnaround (report → done) | |
-| `REASSIGN` | robot / request | times this request was released | reason (robot offline, route lost, battery) |
-| `REQUEST_FAILED` | request | | reason |
-| `RETURN_TO_CHARGER` | robot / charger id | route cost | |
-| `ENV_BLOCK`, `ENV_UNBLOCK` | connection id | robots whose route used it (BLOCK) | endpoints, changed / no-op |
-| `STATION_DOWN`, `STATION_UP` | location id | 0 / 1 | |
-| `URGENCY_CHANGE` | request | new urgency | or "ignored: request already …" |
-| `ROBOT_OFFLINE`, `ROBOT_ONLINE` | robot | 1 changed / 0 no-op | |
-| `REJECTED` | robot or request | battery | an illegal transition or an action refused for lack of battery |
-| `SIM_END` | | steps simulated | termination reason |
-| `FINAL_STAT` | | the number | its name (`completed`, `failed`, `pending`, `assignments`, `reroutes`, `conflicts`, `total_distance`, `battery_*`, `max_response_time`, `route_searches`, …) |
-| `FINAL_ROBOT` | robot | tasks completed | final state, battery, busy steps, distance, battery used / recharged |
-
-**Final statistics** (stdout, `--stats-out`): requests completed / failed / remaining, average and maximum response
-time (report → start of work), response time per urgency level, robot utilization, distance, battery used and
-recharged, assignments / reassignments / reroutes, conflicts, environment changes, rejected actions, route-search work
-counters, execution time, and a per-robot table. Execution time is deliberately **not** part of the record.
-
-`output/` already contains the record and statistics of every scenario, e.g.
-`output/scenario_provided_record.csv` and `output/scenario_provided_stats.txt` (the provided scenario).
-
-## 8. Simulation rules (summary — see the report for the reasoning)
-
-* **Time.** One step = one unit of simulated time. A robot moves up to `speed` cost units and does one unit of rescue
-  work per step. Steps `t = 0 … max_steps − 1`.
-* **Order inside every step (fixed and consistent):** (1) events with `time ≤ t` in file order → (2) requests with
-  `report_time ≤ t` become PENDING in file order → (3) dispatch → (4) every robot advances one step in ascending robot
-  id → (5) termination check.
-* **Environment.** Undirected connections with integer cost; the route criterion is **minimum total cost** (Dijkstra
-  over OPEN connections). A BLOCKED connection cannot be entered until an `UNBLOCK` event.
-* **Dispatch.** Pending requests are taken in the order *effective urgency ↓, report time ↑, request id ↑*
-  (effective urgency = urgency, plus waited steps / `aging_steps` when aging is on). A request is given to an idle
-  robot that is capable (`GENERAL` serves any category), can reach it over open roads and has enough battery for
-  *route + work + the trip from the request to the nearest UP charging station*. Among candidates: **cheapest route →
-  specialist before GENERAL → lowest robot id**. A request nobody can take stays PENDING (for example while its
-  location is cut off) and is retried every step. A request whose category no robot can ever serve FAILS at once.
-* **Lifecycle.** `NOT_REPORTED → PENDING → ASSIGNED → IN_PROGRESS → COMPLETED`; `ASSIGNED/IN_PROGRESS → PENDING` when
-  released; `FAILED` when no robot can ever serve it or after more than `max_reassign` releases. A request has at most
-  one robot, and only `IN_PROGRESS → COMPLETED` completes it, so double completion is impossible. Illegal transitions
-  are rejected, counted and logged (`REJECTED`).
-* **Road blocked while travelling.** A robot already on a road finishes it; at the next node it checks its next
-  connection. If that is blocked it re-plans; with no alternative route, or not enough battery for the new route, the
-  request is released to PENDING (reassignment) and the robot becomes AVAILABLE.
-* **Robot offline.** Its request is released immediately; interrupted work restarts from zero for the next robot. A robot
-  that is mid-road finishes that road after coming back online.
-* **Station down.** Robots recharging there stop; robots heading there re-plan to the nearest UP station.
-* **Resources.** Moving costs `battery_per_cost_unit` per cost unit, work costs `battery_per_work_step` per step; an UP
-  station gives `recharge_per_step` per step up to the maximum. An idle robot goes to the nearest UP station when below
-  `low_battery_pct` or when a pending request is infeasible only because of its battery.
-* **Termination.** `max_steps` reached, or (if `stop_when_done`) every request COMPLETED or FAILED.
-* **Metrics.** Response time = step of the first work unit − report time. Utilization = robot-steps TRAVELLING or
-  PERFORMING / (robots × steps).
-
-## 9. Performance notes
-
-The benchmark generated scenarios from 50 to 3,200 locations (and up to 3,200 requests / 640 robots) and writes
-`output/benchmark.csv` (median of several runs, plus deterministic work counters). On the machine used for the report
-the 3,200-location / 3,200-request / 640-robot scenario takes about 2.2 s for 500 steps; the provided scenario takes about
-1 ms. Route searches use one of two strategies per dispatch pass, chosen deterministically only for speed: one search per
-idle robot (cached while it stays put and roads do not change) when more requests wait than robots are idle, otherwise one
-early-exit search per request. When several routes have exactly the same minimum cost the two strategies may pick
-different ones; a given strategy always picks the same one. Details and charts are in `report.pdf`.
-
-## 10. Verification (`test_runner`, `tests/`)
-
-* unit tests of every data structure and the state machines, **Dijkstra vs. Floyd–Warshall** on random graphs with
-  blocked edges, early-exit search vs. full search, route-strategy agreement, aging, loader facts for the provided file;
-* the same tests and **every scenario under AddressSanitizer + UBSan**, with the invariant checker run after every step;
-* every malformed input in `tests/invalid/` must be rejected without a crash;
-* **golden regression**: the provided scenario's record and statistics must equal `tests/golden/`;
-* determinism (byte-identical records on repeated runs) and CSV well-formedness / event coverage;
-* **mutation fuzzing** of scenario files under the sanitizers (corrupted counts, ids, numbers, truncation, long lines …);
-* source scan proving no STL containers or `std::string` are used.
-
-## 11. Known limitations
-
-Greedy (non-optimal) matching of requests to robots; no pre-emption of robots that are returning to charge; interrupted
-work restarts from zero; each assignment needs a shortest-path search, so total work grows roughly quadratically when the
-whole instance is scaled. See the report (Limitations) for the discussion.
+For how and why it works the way it does, read `report.pdf`.
