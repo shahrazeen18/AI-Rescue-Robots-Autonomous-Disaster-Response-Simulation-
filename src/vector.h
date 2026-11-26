@@ -1,6 +1,4 @@
-// vector.h - hand-written dynamic array (no STL).
-// Amortised O(1) pushBack, O(1) indexed access. Rule-of-five implemented so
-// copies are deep and memory is always released (RAII).
+// Custom dynamic array implementation.
 #ifndef RR_VECTOR_H
 #define RR_VECTOR_H
 

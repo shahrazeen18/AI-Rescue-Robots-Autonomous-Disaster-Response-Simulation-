@@ -1,10 +1,8 @@
 // environment.h - the disaster region as an undirected weighted graph.
 //
-// Representation: adjacency list in compressed (CSR) form. Locations and
-// connections live in dense arrays indexed 0..n-1 (internal indices); the
-// external ids from the input file are translated with a hash map (IntMap).
-// Blocking/unblocking a connection flips one flag (O(1)); the adjacency
-// structure itself is never modified, so no rebuild is ever needed.
+// Stores the disaster area as a graph.
+// External IDs are converted into internal indices using IntMap.
+// Blocked connections are handled using a flag.
 #ifndef RR_ENVIRONMENT_H
 #define RR_ENVIRONMENT_H
 

@@ -1,7 +1,5 @@
-// int_map.h - hand-written open-addressing hash table, int key -> int value.
-// Used to translate external ids (arbitrary positive integers) into dense
-// internal indices. Linear probing, power-of-two capacity, load factor <= 0.5.
-// Expected O(1) insert / lookup. No deletion is needed by this project.
+// Hash table used to map external IDs to internal indices.
+// Uses linear probing to resolve collisions.
 #ifndef RR_INT_MAP_H
 #define RR_INT_MAP_H
 
