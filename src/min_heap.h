@@ -59,6 +59,6 @@ class MinHeap {
   Less less_;
 };
 
-}  // namespace rr
+}  
 
 #endif

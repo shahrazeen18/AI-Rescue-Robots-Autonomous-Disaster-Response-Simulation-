@@ -45,4 +45,4 @@ const char* robotStateName(int s) { return kRobotStateNames[s]; }
 const char* requestStateName(int s) { return kRequestStateNames[s]; }
 const char* eventTypeName(int e) { return kEventTypeNames[e]; }
 
-}  // namespace rr
+}  

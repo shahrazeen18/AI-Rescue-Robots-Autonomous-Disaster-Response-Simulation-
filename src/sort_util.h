@@ -43,6 +43,6 @@ void stableSort(Vector<T>& v, const Less& less) {
   }
 }
 
-}  // namespace rr
+}  
 
 #endif

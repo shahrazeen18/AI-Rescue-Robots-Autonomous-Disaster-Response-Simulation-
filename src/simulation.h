@@ -80,14 +80,14 @@ class Simulation {
   const Params& params() const { return params_; }
 
  private:
-  // --- step phases ---
+  // step phases 
   void applyEvents();
   void applyEvent(const ScenarioEvent& e);
   void reportRequests();
   void dispatch();
   void updateRobots();
 
-  // --- dispatch helpers ---
+  //  dispatch helpers
   // Route search from an idle robot's location, cached while the robot stays
   // where it is and no road/station has changed (env_.version()).
   struct RouteCache {
@@ -105,7 +105,7 @@ class Simulation {
                        int duration) const;
   void assign(int ri, int qi, i64 cost, bool contested);
 
-  // --- robot behaviour ---
+  // robot behaviour 
   void travelStep(int ri);
   void workStep(int ri);
   void returnStep(int ri);
@@ -121,7 +121,7 @@ class Simulation {
   void releaseRequest(int ri, const char* reason);
   void failRequest(int qi, const char* reason);
 
-  // --- guarded state changes (reject + record illegal transitions) ---
+  //  guarded state changes (reject + record illegal transitions) 
   bool setRobotState(int ri, int to, const char* reason);
   bool setRequestState(int qi, int to, const char* reason);
 
@@ -155,6 +155,6 @@ class Simulation {
   Stats stats_;
 };
 
-}  // namespace rr
+}  
 
 #endif

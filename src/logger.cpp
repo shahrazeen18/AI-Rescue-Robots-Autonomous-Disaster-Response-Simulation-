@@ -40,4 +40,4 @@ void Logger::log(int time, const char* event, int robot, int request,
   ++lines_;
 }
 
-}  // namespace rr
+}  

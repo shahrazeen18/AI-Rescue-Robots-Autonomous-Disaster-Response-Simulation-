@@ -55,6 +55,5 @@ struct Robot {
   }
 };
 
-}  // namespace rr
-
+}  
 #endif

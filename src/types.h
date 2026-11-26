@@ -75,6 +75,6 @@ inline bool canServe(int capability, int category) {
   return capability == CAP_GENERAL || capability == category;
 }
 
-}  // namespace rr
+}  
 
 #endif

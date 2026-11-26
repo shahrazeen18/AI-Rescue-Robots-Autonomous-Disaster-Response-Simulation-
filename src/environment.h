@@ -40,14 +40,14 @@ class Environment {
  public:
   static constexpr i64 INF = 4000000000000000000LL;
 
-  // --- construction (used by the scenario loader) ---
+  //  construction (used by the scenario loader) 
   // Return the new internal index, or -1 if the id already exists.
   int addLocation(int id, const char* name, int type);
   int addConnection(int id, int a, int b, int cost, bool blocked);
   // Builds the adjacency structure. Must be called once after all additions.
   void finalize();
 
-  // --- queries ---
+  //  queries 
   int numLocations() const { return locs_.size(); }
   int numConnections() const { return conns_.size(); }
   const Location& location(int i) const { return locs_[i]; }
@@ -81,19 +81,12 @@ class Environment {
   i64 nodesSettled() const { return settled_; }
   i64 edgesScanned() const { return scanned_; }
 
-  // --- routing ---
+  // routing
   // Dijkstra from src over OPEN connections only. dist[v] is the minimum
   // total cost (INF if unreachable); prevEdge[v] is the connection used to
   // reach v on its shortest path (-1 for src/unreachable). Deterministic:
   // ties are resolved by heap order (cost, node index) and adjacency order.
-  //
-  // Early exit (optional). If targetMask is given, the search stops as soon as
-  // every node with targetMask[v] != 0 has been settled (targetCount = number
-  // of such nodes); if stopAtStation is true it also waits until the nearest
-  // UP charging station has been settled. Nodes settled before the stop have
-  // exact dist/prevEdge values (identical to a full run); other nodes may hold
-  // tentative values that are >= their true distance. With neither option the
-  // whole reachable region is explored.
+
   void shortestPaths(int src, Vector<i64>& dist, Vector<int>& prevEdge,
                      const Vector<char>* targetMask = nullptr,
                      int targetCount = 0, bool stopAtStation = false) const;
@@ -131,6 +124,6 @@ class Environment {
   mutable i64 scanned_ = 0;
 };
 
-}  // namespace rr
+}  
 
 #endif

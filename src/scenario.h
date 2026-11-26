@@ -73,6 +73,6 @@ bool loadScenario(const char* path, Scenario& out, LoadReport& report);
 
 void printLoadReport(FILE* f, const LoadReport& report);
 
-}  // namespace rr
+}  
 
 #endif

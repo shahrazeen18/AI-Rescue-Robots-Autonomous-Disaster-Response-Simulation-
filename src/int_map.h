@@ -81,6 +81,6 @@ class IntMap {
   int count_;
 };
 
-}  // namespace rr
+}  
 
 #endif

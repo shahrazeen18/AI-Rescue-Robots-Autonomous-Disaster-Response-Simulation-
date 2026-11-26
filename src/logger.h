@@ -39,6 +39,6 @@ class Logger {
   long lines_;
 };
 
-}  // namespace rr
+}  
 
 #endif

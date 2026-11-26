@@ -143,6 +143,6 @@ class Vector {
   int cap_;
 };
 
-}  // namespace rr
+}  
 
 #endif

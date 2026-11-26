@@ -1,12 +1,4 @@
 // rescue_request.h - a rescue request and its lifecycle.
-//
-// Lifecycle (state machine, enforced by Request::transition):
-//
-//   NOT_REPORTED --report--> PENDING --assign--> ASSIGNED --arrive--> IN_PROGRESS
-//        |                      ^  |                 |                    |  |
-//        |                      |  +----> FAILED     +--release-> PENDING |  +-> COMPLETED
-//        +--(no capable robot)--+-----------^        (route lost/offline) +-release-> PENDING
-//
 // COMPLETED and FAILED are terminal. A request has at most one robot at a
 // time (robot index), and only IN_PROGRESS -> COMPLETED completes it, so it
 // can never be completed twice.
@@ -46,6 +38,6 @@ struct Request {
   bool terminal() const { return state == QS_COMPLETED || state == QS_FAILED; }
 };
 
-}  // namespace rr
+}  
 
 #endif

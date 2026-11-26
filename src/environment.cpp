@@ -8,7 +8,7 @@ using namespace std;
 
 namespace rr {
 
-constexpr i64 Environment::INF;  // definition for pre-C++17 compilers
+constexpr i64 Environment::INF;  
 
 
 namespace {
@@ -27,7 +27,7 @@ struct HeapLess {
   }
 };
 
-}  // namespace
+}  
 
 int Environment::addLocation(int id, const char* name, int type) {
   int idx = locs_.size();

@@ -118,7 +118,7 @@ int interactiveLoop(Simulation& sim, bool check) {
   return 0;
 }
 
-}  // namespace
+}  
 
 int main(int argc, char** argv) {
   Options opt;

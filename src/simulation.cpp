@@ -45,7 +45,7 @@ struct PendingLess {
   }
 };
 
-}  // namespace
+}  
 
 Simulation::Simulation(const Scenario& s, Logger* log)
     : params_(s.params),
@@ -118,9 +118,7 @@ void Simulation::runSteps(int n) {
   if (finished()) finish();
 }
 
-// ---------------------------------------------------------------------------
 // guarded state changes
-// ---------------------------------------------------------------------------
 
 bool Simulation::setRobotState(int ri, int to, const char* reason) {
   Robot& r = robots_[ri];
@@ -191,9 +189,7 @@ void Simulation::releaseRequest(int ri, const char* reason) {
   }
 }
 
-// ---------------------------------------------------------------------------
 // events and reports
-// ---------------------------------------------------------------------------
 
 void Simulation::applyEvents() {
   while (eventCursor_ < events_.size() &&
@@ -312,9 +308,7 @@ void Simulation::reportRequests() {
   }
 }
 
-// ---------------------------------------------------------------------------
 // dispatch
-// ---------------------------------------------------------------------------
 
 const Simulation::RouteCache& Simulation::routeFrom(int ri) {
   RouteCache& c = routeCache_[ri];
@@ -492,9 +486,7 @@ void Simulation::assign(int ri, int qi, i64 cost, bool contested) {
   }
 }
 
-// ---------------------------------------------------------------------------
 // robot behaviour
-// ---------------------------------------------------------------------------
 
 void Simulation::updateRobots() {
   for (int k = 0; k < robotOrder_.size(); ++k) {
@@ -789,9 +781,7 @@ void Simulation::returnStep(int ri) {
   }
 }
 
-// ---------------------------------------------------------------------------
 // statistics, reports, invariants
-// ---------------------------------------------------------------------------
 
 void Simulation::computeStats(Stats& out) const {
   out = stats_;
@@ -1050,4 +1040,4 @@ bool Simulation::checkInvariants(char* msg, int cap) const {
   return true;
 }
 
-}  // namespace rr
+}  

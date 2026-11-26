@@ -29,4 +29,4 @@ bool Robot::transition(int to) {
   return true;
 }
 
-}  // namespace rr
+}  
